@@ -477,8 +477,8 @@ function parseDate(value, field, options) {
     //todo: Arash, to fix persian number as date
     const p2e = s => s.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d))
     value = p2e(value)
+//    console.log('parseDate', value)
 
-    console.log('parseDate', value)
     var datePattern = time.getLangDateFormat();
     var datePatternWoZero = time.getLangDateFormatWoZero();
     var date;
