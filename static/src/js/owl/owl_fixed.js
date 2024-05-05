@@ -3897,7 +3897,7 @@ See https://github.com/odoo/owl/blob/master/doc/reference/config.md#mode for mor
                     //todo arash: fix the list filter on 'create on' which it shows  receive :
                     // Invalid Prop 'date' in component 'DateTimePicker'
                     if(Widget.name === 'DateTimePicker' || Widget.name === 'DatePicker' ){
-                        console.log('isValid',isValid)
+//                        console.log('isValid',isValid)
                         isValid = true;
                         }
 
