@@ -39,7 +39,7 @@
         ],
         'web.assets_backend': [
             'odoo_jalaali/static/src/css/fonts_web.scss',
-            ('replace', 'web/static/src/legacy/js/fields/field_utils.js', 'odoo_jalaali/static/src/js/field_utils.js'),
+            # ('replace', 'web/static/src/legacy/js/fields/field_utils.js', 'odoo_jalaali/static/src/js/field_utils.js'),
             ],
         'web.assets_frontend': [
             'odoo_jalaali/static/src/css/fonts_front.scss'
