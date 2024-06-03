@@ -44,7 +44,6 @@ odoo.define('odoo_jalaali.jalaali', function (require) {
 
     /** #########################################################*/
     time.fixPersianLocale = function () {
-
         //debugger;
         //var ggg = session;
         return typeof moment != 'undefined' && moment.fixPersian && moment.fixPersian()
@@ -67,13 +66,13 @@ odoo.define('odoo_jalaali.jalaali', function (require) {
     time.getLangDateFormat = function () {
         time.fixPersianLocale();
         if (time.getCalendar()=='j'){
-//            console.log('56', time, time.getUserDateFormat())
             switch(time.getUserDateFormat()){
 //                case 'YYYY':
 //                    return "jYYYY";
                 case 'YYYY/M/D':
                     return "jYYYY/jM/jD";
                 default:
+//                     console.log('75', "jYYYY/jMM/jDD", this)
                     return "jYYYY/jMM/jDD";
             }
         }

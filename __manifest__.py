@@ -28,8 +28,12 @@
     'assets': {
         'web._assets_common_scripts': [
             # 'odoo_jalaali/static/src/js/field_utils.js',
-            'odoo_jalaali/static/src/js/jalaali.js',
-            'odoo_jalaali/static/src/js/moment/moment-jalaali.js',
+            # 'odoo_jalaali/static/src/js/listView/list_render.js',
+            ('after','web/static/src/legacy/js/libs/moment.js', 'odoo_jalaali/static/src/js/moment/moment-jalaali.js'),
+            ('after','web/static/src/legacy/js/libs/moment.js', 'odoo_jalaali/static/src/js/jalaali.js'),
+
+            # 'odoo_jalaali/static/src/js/jalaali.js',
+            # 'odoo_jalaali/static/src/js/moment/moment-jalaali.js',
             'odoo_jalaali/static/src/js/tempusdominus/tempusdominus_fixed.js',
             ('replace', 'web/static/lib/owl/owl.js', 'odoo_jalaali/static/src/js/owl/owl_fixed.js'),
         ],

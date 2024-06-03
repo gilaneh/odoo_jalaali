@@ -410,6 +410,9 @@ var DateTimePicker = function ($, moment) {
 
         DateTimePicker.prototype._setValue = function _setValue(targetMoment, index) {
             var oldDate = this.unset ? null : this._dates[index];
+//            console.log('_setValue:', this._dates)
+
+
             var outpValue = '';
             // case of calling setValue(null or false)
             if (!targetMoment) {
@@ -464,7 +467,6 @@ var DateTimePicker = function ($, moment) {
                     this.input.trigger('input');
                 }
                 this._element.data('date', outpValue);
-
                 this.unset = false;
                 this._update();
                 this._notifyEvent({
@@ -497,6 +499,7 @@ var DateTimePicker = function ($, moment) {
             var val = $(e.target).val().trim(),
                 parsedDate = val ? this._parseInputDate(val) : null;
             this._setValue(parsedDate);
+
             e.stopImmediatePropagation();
             return false;
         };
@@ -1987,9 +1990,9 @@ var TempusDominusBootstrap4 = function ($) {
 
             /// parOdoo fixup
             months.removeClass('active');
-            var _y = this.getCalendar()+"y";
+            var _y = this.getCalendar() + "y";
             if (this._getLastPickedDate().isSame(this._viewDate, _y) && !this.unset) {
-                active_month = this._getLastPickedDate().format(this.getCalendar()+'M')-1;
+                active_month = this._getLastPickedDate().format(this.getCalendar() + 'M') - 1;
                 //months.eq(this._getLastPickedDate().month()).addClass('active');
                 months.eq(active_month).addClass('active');
             }
@@ -2032,6 +2035,7 @@ var TempusDominusBootstrap4 = function ($) {
             /// parOdoo fixup:
             //yearsViewHeader.eq(1).text(startYear.year() + '-' + endYear.year());
             yearsViewHeader.eq(1).text(startYear.format(_YYYY) + '-' + endYear.format(_YYYY));
+//            console.log('_YYYY', _YYYY, yearsViewHeader.eq(1))
 
             if (this._options.maxDate && this._options.maxDate.isBefore(endYear, 'y')) {
                 yearsViewHeader.eq(2).addClass('disabled');
@@ -2360,7 +2364,6 @@ var TempusDominusBootstrap4 = function ($) {
                             this._showMode(-1);
                             this._fillDate();
                         }
-                        this._viewUpdate('YYYY');
                         break;
                     }
                 case 'selectDay':
@@ -2885,7 +2888,6 @@ var TempusDominusBootstrap4 = function ($) {
         $.fn[DateTimePicker.NAME] = JQUERY_NO_CONFLICT;
         return TempusDominusBootstrap4._jQueryInterface;
     };
-
     return TempusDominusBootstrap4;
 }(jQuery);
 
