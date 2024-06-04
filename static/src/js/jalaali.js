@@ -65,6 +65,8 @@ odoo.define('odoo_jalaali.jalaali', function (require) {
     time._getLangDateFormat = time.getLangDateFormat;
     time.getLangDateFormat = function () {
         time.fixPersianLocale();
+//        console.log('75', time.getCalendar())
+
         if (time.getCalendar()=='j'){
             switch(time.getUserDateFormat()){
 //                case 'YYYY':
@@ -100,7 +102,7 @@ odoo.define('odoo_jalaali.jalaali', function (require) {
 });
 
     /** #########################################################*/
-console.log('odoo:', odoo.session_info)
+//console.log('odoo:', odoo.session_info)
 if (typeof odoo!='undefined' && odoo.session_info && odoo.session_info.user_context){
 
     odoo.session_info.user_context.getCalendar == function(){
@@ -119,5 +121,4 @@ if (typeof odoo!='undefined' && odoo.session_info && odoo.session_info.user_cont
         var user_context = ((typeof odoo == 'undefined' ? {} : odoo).session_info || {}).user_context;
         return time.getUserDateFormat(user_context);
     }
-
 }

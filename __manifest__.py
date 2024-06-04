@@ -16,7 +16,7 @@
     # for the full list
     'category': 'Service Desk/Service Desk',
     'application': False,
-    'version': '1.2.5.1',
+    'version': '15.0.1.2.5.2',
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'web'],
@@ -29,6 +29,8 @@
         'web._assets_common_scripts': [
             # 'odoo_jalaali/static/src/js/field_utils.js',
             'odoo_jalaali/static/src/js/listView/list_render.js',
+            'odoo_jalaali/static/src/js/listView/activity.js',
+            'odoo_jalaali/static/src/js/listView/message.js',
             ('after','web/static/src/legacy/js/libs/moment.js', 'odoo_jalaali/static/src/js/moment/moment-jalaali.js'),
             ('after','web/static/src/legacy/js/libs/moment.js', 'odoo_jalaali/static/src/js/jalaali.js'),
 

@@ -1,6 +1,6 @@
 (function (exports) {
     'use strict';
-     console.log('owl jalaali')
+//     console.log('owl jalaali')
     /**
      * We define here a simple event bus: it can
      * - emit events

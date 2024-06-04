@@ -6,21 +6,15 @@ import BasicController from 'web.BasicController';
 import ListRenderer from 'web.ListRenderer';
 // addons/web/static/src/legacy/js/views/list/list_renderer.js
 import relational_fields from 'web.relational_fields';
-//import {factory} from 'mail.message';
 let FieldX2Many = relational_fields.FieldX2Many
 import utils from 'web.utils';
 import { WidgetAdapterMixin } from 'web.OwlCompatibility';
 var _t = core._t;
 
 
-//import { MockModels } from '@mail/models/message/message';
-//import { patch } from 'web.utils';
-//factory.include({
-//      addons/mail/static/src/models/message/message.js
-//_computeDateDay(){
-//    console.log('_computeDateDay')
-//}
-//})
+
+
+
 
 BasicController.include({
     /** This make sure the x2m record form will transfer correct date format to the parent view.
