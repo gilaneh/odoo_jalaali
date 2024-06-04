@@ -35,7 +35,7 @@
             # 'odoo_jalaali/static/src/js/jalaali.js',
             # 'odoo_jalaali/static/src/js/moment/moment-jalaali.js',
             'odoo_jalaali/static/src/js/tempusdominus/tempusdominus_fixed.js',
-            ('replace', 'web/static/lib/owl/owl.js', 'odoo_jalaali/static/src/js/owl/owl.js'),
+            # ('replace', 'web/static/lib/owl/owl.js', 'odoo_jalaali/static/src/js/owl/owl.js'),
             # 'odoo_jalaali/static/src/js/owl/owl_fixed.js',
         ],
         'web._assets_common_styles': [
