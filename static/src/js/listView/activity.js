@@ -11,7 +11,7 @@ patch(Activity.prototype, 'datetime_jalaali', {
             const datetimeFormat = time.getLangDatetimeFormat();
             // todo: ARASH, it gets default format and needed to convert to jalaali format.
 //        const datetimeFormat = 'jYYYY/jMM/jDD';
-            console.log('formattedCreateDatetime patch', )
+//            console.log('formattedCreateDatetime patch', )
 
             return momentCreateDate.format(datetimeFormat);
 
@@ -22,7 +22,7 @@ patch(Activity.prototype, 'datetime_jalaali', {
         const momentDeadlineDate = moment(time.auto_str_to_date(this.activity.dateDeadline));
         const datetimeFormat = time.getLangDateFormat();
 //        const datetimeFormat = 'jYYYY/jMM/jDD';
-            console.log('format patch', datetimeFormat)
+//            console.log('format patch', datetimeFormat)
 
         return momentDeadlineDate.format(datetimeFormat);
     }
