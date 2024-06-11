@@ -28,9 +28,9 @@
     'assets': {
         'web._assets_common_scripts': [
             # 'odoo_jalaali/static/src/js/field_utils.js',
-            'odoo_jalaali/static/src/js/listView/list_render.js',
-            'odoo_jalaali/static/src/js/listView/activity.js',
-            'odoo_jalaali/static/src/js/listView/message.js',
+            'odoo_jalaali/static/src/js/patch/list_render.js',
+            'odoo_jalaali/static/src/js/patch/activity.js',
+            'odoo_jalaali/static/src/js/patch/message.js',
             ('after','web/static/src/legacy/js/libs/moment.js', 'odoo_jalaali/static/src/js/moment/moment-jalaali.js'),
             ('after','web/static/src/legacy/js/libs/moment.js', 'odoo_jalaali/static/src/js/jalaali.js'),
 
@@ -46,7 +46,7 @@
         ],
         'web.assets_backend': [
             'odoo_jalaali/static/src/css/fonts_web.scss',
-            # ('replace', 'web/static/src/legacy/js/fields/field_utils.js', 'odoo_jalaali/static/src/js/field_utils.js'),
+            'odoo_jalaali/static/src/js/patch/field_utils.js',
             ],
         'web.assets_frontend': [
             'odoo_jalaali/static/src/css/fonts_front.scss'
