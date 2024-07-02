@@ -23,7 +23,7 @@
 
     # always loaded
     'data': [
-        'views/settings.xml',
+        # 'views/settings.xml',
         ],
     'assets': {
         'web._assets_common_scripts': [
@@ -35,10 +35,15 @@
             ('after','web/static/src/legacy/js/libs/moment.js', 'odoo_jalaali/static/src/js/jalaali.js'),
 
             # 'odoo_jalaali/static/src/js/jalaali.js',
+            # 'odoo_jalaali/static/src/js/jalaali-js.js',
             # 'odoo_jalaali/static/src/js/moment/moment-jalaali.js',
             'odoo_jalaali/static/src/js/tempusdominus/tempusdominus_fixed.js',
             # ('replace', 'web/static/lib/owl/owl.js', 'odoo_jalaali/static/src/js/owl/owl.js'),
             # 'odoo_jalaali/static/src/js/owl/owl_fixed.js',
+        ],
+        'web._assets_core': [
+            ('before','web/static/src/core/**/*', 'odoo_jalaali/static/src/js/jalaali-js.js'),
+
         ],
         'web._assets_common_styles': [
             'odoo_jalaali/static/src/css/fonts_fn.scss',
@@ -46,7 +51,7 @@
         ],
         'web.assets_backend': [
             'odoo_jalaali/static/src/css/fonts_web.scss',
-            'odoo_jalaali/static/src/js/patch/field_utils.js',
+            # 'odoo_jalaali/static/src/js/patch/field_utils.js',
             ],
         'web.assets_frontend': [
             'odoo_jalaali/static/src/css/fonts_front.scss'

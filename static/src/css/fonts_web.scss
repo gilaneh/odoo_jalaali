@@ -1,4 +1,4 @@
-body.o_rtl *:not([class*='fa']),{
+body.o_rtl *:not([class*='fa']):not([class*='oi']),{
 	font-family: IRANSans,"Roboto", "Odoo Unicode Support Noto", sans-serif !important;
 }
 

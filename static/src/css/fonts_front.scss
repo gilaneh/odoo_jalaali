@@ -1,5 +1,5 @@
 
-html[lang="fa-IR"] *:not([class*='fa']),{
+html[lang="fa-IR"] *:not([class*='fa']):not([class*='oi']),{
 	font-family: IRANSans,"Roboto", "Odoo Unicode Support Noto", sans-serif !important;
 }
 
