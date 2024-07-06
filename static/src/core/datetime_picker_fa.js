@@ -500,7 +500,6 @@ const PRECISION_LEVELS_fa = new Map()
         step: { year: 10 },
         getTitle: (date) => {
             date = jalaaliDate(date)
-            console.log
             return `${jGetStartOfDecade(date)} - ${jGetStartOfDecade(date) + 9}`
         },
         getItems: (date, { maxDate, minDate }) => {
@@ -513,7 +512,7 @@ const PRECISION_LEVELS_fa = new Map()
                 const startOfYear = startOfDecade.plus({ year: i });
 //                const range = [startOfYear, startOfYear.endOf("year")];
                 const range = jalaaliDateRange(startOfYear, 'year');
-                console.log('year', `[${i}]`, range[0].toFormat(JALAALI_FORMAT), range[1].toFormat(JALAALI_FORMAT),)
+//                console.log('year', `[${i}]`, range[0].toFormat(JALAALI_FORMAT), range[1].toFormat(JALAALI_FORMAT),)
                 return toDateItem({
                     isOutOfRange: i < 0 || i >= GRID_COUNT,
                     isValid: isInRange(range, [minDate, maxDate]),
@@ -538,14 +537,14 @@ const PRECISION_LEVELS_fa = new Map()
             const jDateYear = jGetStartOfCentury(date)
             const jStartOfCentury = jalaali.toGregorian(jDateYear, 1, 1)
             const startOfCentury = date.set({ year: jStartOfCentury.gy });
-                console.log('\nstartOfCentury', startOfCentury.toFormat(JALAALI_FORMAT),jDateYear, jStartOfCentury)
+//                console.log('\nstartOfCentury', startOfCentury.toFormat(JALAALI_FORMAT),jDateYear, jStartOfCentury)
 
             return numberRange(-GRID_MARGIN, GRID_COUNT + GRID_MARGIN).map((i) => {
 
                 const startOfDecade = startOfCentury.plus({ year: i * 10 });
 //                const range = [startOfDecade, startOfDecade.plus({ year: 10, millisecond: -1 })];
                 const range = jalaaliDateRange(startOfDecade, 'decades');
-                console.log('Century', i, range[0].toFormat(JALAALI_FORMAT), range[1].toFormat(JALAALI_FORMAT))
+//                console.log('Century', i, range[0].toFormat(JALAALI_FORMAT), range[1].toFormat(JALAALI_FORMAT))
                 return toDateItem({
                     label: "year",
                     isOutOfRange: i < 0 || i >= GRID_COUNT,
@@ -968,6 +967,7 @@ patch(DateTimePicker.prototype,{
     zoomIn(date) {
 //        console.log('zoomIn1', date.year, date.month, date.day)
         date = jalaaliDate(date)
+//        console.log('zoomIn2', date.year, date.month, date.day)
         const index = this.allowedPrecisionLevels.indexOf(this.state.precision) - 1;
         if (index in this.allowedPrecisionLevels) {
             this.state.focusDate = this.clamp(date);

@@ -39,7 +39,10 @@ patch(Dates, {
         return value.setZone("default").toFormat(format);
 
     },
-
+    parseDate(value, options = {}) {
+        const parsed = Dates.parseDateTime(value, { ...options, format: options.format || localization.dateFormat });
+        return parsed && parsed.startOf("day");
+    },
     parseDateTime(value, options = {}) {
     let result = super.parseDateTime(...arguments)
 
