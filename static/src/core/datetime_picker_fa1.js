@@ -1,6 +1,5 @@
 /** @odoo-module **/
 import { session } from "@web/session";
-import { loadJS } from "@web/core/assets";
 import { Component, onWillRender, onWillUpdateProps, useState } from "@odoo/owl";
 import { _t } from "@web/core/l10n/translation";
 import {
@@ -16,7 +15,6 @@ import { localization } from "../l10n/localization";
 import { ensureArray } from "../utils/arrays";
 
 const { DateTime, Info } = luxon;
-//loadJS('odoo_jalaali/src/js/jalaali-js.js')
 /**
  * @typedef DateItem
  * @property {string} id

@@ -16,7 +16,7 @@
     # for the full list
     'category': 'Service Desk/Service Desk',
     'application': False,
-    'version': '17.0.1.2.5',
+    'version': '17.0.1.2.6',
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'web'],
@@ -54,6 +54,8 @@
         ],
         'web.assets_backend': [
             'odoo_jalaali/static/src/css/fonts_web.scss',
+            ('before','web/static/src/views/**/*', 'odoo_jalaali/static/src/core/calendar_year_renderer_fa.js'),
+
             # 'odoo_jalaali/static/src/js/patch/field_utils.js',
             ],
         'web.assets_frontend': [
