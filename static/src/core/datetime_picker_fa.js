@@ -420,11 +420,11 @@ const PRECISION_LEVELS_fa = new Map()
             date = jalaaliDate(date)
             const startDates = [date];
 
-//            console.log('getItems', date)
+//            console.log('getItems', date.toISODate())
 
             if (additionalMonth) {
                 // Gilaneh 1 > 2
-                startDates.push(date.plus({ month: 2 }));
+                startDates.push(startDates[0].plus({ month: 1 }));
             }
             return startDates.map((date, i) => {
 
@@ -730,7 +730,7 @@ patch(DateTimePicker.prototype,{
             dayCellClass: this.props.dayCellClass,
         };
         const referenceDate = this.state.focusDate;
-//        console.log('referenceDate', referenceDate, getterParams )
+        console.log('referenceDate', referenceDate.toISODate() )
         this.title = precision.getTitle(referenceDate, getterParams);
         this.items = precision.getItems(referenceDate, getterParams);
 

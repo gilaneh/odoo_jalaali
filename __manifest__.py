@@ -45,8 +45,12 @@
 
             ],
         'web.assets_frontend': [
-            'odoo_jalaali/static/src/css/fonts_front.scss'
-            ],
+            'odoo_jalaali/static/src/css/fonts_front.scss',
+            ('before', 'web/static/src/core/l10n/dates.js', 'odoo_jalaali/static/src/js/jalaali-js.js'),
+            ('after', 'web/static/src/core/l10n/dates.js', 'odoo_jalaali/static/src/core/dates_fa.js'),
+            ('after', 'odoo_jalaali/static/src/core/dates_fa.js', 'odoo_jalaali/static/src/core/datetime_picker_fa.js'),
+
+        ],
         'web.report_assets_common': [
             'odoo_jalaali/static/src/css/fonts_fn.scss',
             # 'odoo_jalaali/static/css/fonts_en.scss',
