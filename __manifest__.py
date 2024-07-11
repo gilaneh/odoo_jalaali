@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "odoo_jalaali",
+    'name': "Odoo Jalaali 17",
 
     'summary': """
         It will show the jalaali date for most of date fields""",
@@ -16,7 +16,7 @@
     # for the full list
     'category': 'Service Desk/Service Desk',
     'application': False,
-    'version': '17.0.1.2.6',
+    'version': '17.0.2.0.0',
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'web'],
@@ -27,25 +27,12 @@
         ],
     'assets': {
         'web._assets_common_scripts': [
-            # 'odoo_jalaali/static/src/js/field_utils.js',
-            # 'odoo_jalaali/static/src/js/patch/list_render.js',
-            # 'odoo_jalaali/static/src/js/patch/activity.js',
-            # 'odoo_jalaali/static/src/js/patch/message.js',
-            # ('after','web/static/src/legacy/js/libs/moment.js', 'odoo_jalaali/static/src/js/moment/moment-jalaali.js'),
-            # ('after','web/static/src/legacy/js/libs/moment.js', 'odoo_jalaali/static/src/js/jalaali.js'),
 
-            # 'odoo_jalaali/static/src/js/jalaali.js',
-            # 'odoo_jalaali/static/src/js/jalaali-js.js',
-            # 'odoo_jalaali/static/src/js/moment/moment-jalaali.js',
-            # 'odoo_jalaali/static/src/js/tempusdominus/tempusdominus_fixed.js',
-            # ('replace', 'web/static/lib/owl/owl.js', 'odoo_jalaali/static/src/js/owl/owl.js'),
-            # 'odoo_jalaali/static/src/js/owl/owl_fixed.js',
         ],
         'web._assets_core': [
             ('before','web/static/src/core/**/*', 'odoo_jalaali/static/src/js/jalaali-js.js'),
             ('after','web/static/src/core/l10n/dates.js', 'odoo_jalaali/static/src/core/dates_fa.js'),
             ('after','odoo_jalaali/static/src/core/dates_fa.js', 'odoo_jalaali/static/src/core/datetime_picker_fa.js'),
-            # 'odoo_jalaali/static/src/core/dates_fa.js',
 
         ],
         'web._assets_common_styles': [
@@ -56,7 +43,6 @@
             'odoo_jalaali/static/src/css/fonts_web.scss',
             ('before','web/static/src/views/**/*', 'odoo_jalaali/static/src/core/calendar_year_renderer_fa.js'),
 
-            # 'odoo_jalaali/static/src/js/patch/field_utils.js',
             ],
         'web.assets_frontend': [
             'odoo_jalaali/static/src/css/fonts_front.scss'
