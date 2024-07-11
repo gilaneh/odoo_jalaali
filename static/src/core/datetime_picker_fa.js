@@ -730,7 +730,7 @@ patch(DateTimePicker.prototype,{
             dayCellClass: this.props.dayCellClass,
         };
         const referenceDate = this.state.focusDate;
-        console.log('referenceDate', referenceDate.toISODate() )
+//        console.log('referenceDate', referenceDate.toISODate() )
         this.title = precision.getTitle(referenceDate, getterParams);
         this.items = precision.getItems(referenceDate, getterParams);
 
