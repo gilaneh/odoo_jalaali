@@ -74,7 +74,7 @@ patch(Dates, {
         let result = super.parseDateTime(...arguments)
             // Gilaneh
 //        console.log('parseDateTime G1', result ? result.toISODate() : "No result" )
-        if(isFaLang(session) && result.year < 1600){
+        if(isFaLang(session) &&                      result.year < 1600){
             const gDate = jalaali.toGregorian(result.year, result.month, result.day)
             result = DateTime.fromString(`${gDate.gy}-${gDate.gm}-${gDate.gd} ${result.hour}:${result.minute}`, 'yyyy-M-d H:m')
         }

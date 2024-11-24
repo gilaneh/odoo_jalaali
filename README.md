@@ -3,6 +3,7 @@
 x2m field date fixed. 
 activity date fixed.
 
+
 # odoo_jalaali (1.2.5)
 EN number 
 # odoo_jalaali (1.2.3)
