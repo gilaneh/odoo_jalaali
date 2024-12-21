@@ -1,0 +1,107 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* odoo_jalaali
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 17.0+e-20231108\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-01-23 07:09+0000\n"
+"PO-Revision-Date: 2024-01-23 07:09+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: odoo_jalaali
+#. odoo-javascript
+#: code:addons/odoo_jalaali/static/src/core/datetime/datetime_picker.js:0
+#, python-format
+msgid "Next century"
+msgstr "قرن آینده"
+
+#. module: odoo_jalaali
+#. odoo-javascript
+#: code:addons/odoo_jalaali/static/src/core/datetime/datetime_picker.js:0
+#, python-format
+msgid "Next decade"
+msgstr "دهه آینده"
+
+#. module: odoo_jalaali
+#. odoo-javascript
+#: code:addons/odoo_jalaali/static/src/core/datetime/datetime_picker.js:0
+#, python-format
+msgid "Next month"
+msgstr "ماه آینده"
+
+#. module: odoo_jalaali
+#. odoo-javascript
+#: code:addons/odoo_jalaali/static/src/core/datetime/datetime_picker.js:0
+#, python-format
+msgid "Next year"
+msgstr "سال آینده"
+
+#. module: odoo_jalaali
+#. odoo-javascript
+#: code:addons/odoo_jalaali/static/src/core/datetime/datetime_picker.js:0
+#, python-format
+msgid "Previous century"
+msgstr "قرن گذشته"
+
+#. module: odoo_jalaali
+#. odoo-javascript
+#: code:addons/odoo_jalaali/static/src/core/datetime/datetime_picker.js:0
+#, python-format
+msgid "Previous decade"
+msgstr "دهه قبل"
+
+#. module: odoo_jalaali
+#. odoo-javascript
+#: code:addons/odoo_jalaali/static/src/core/datetime/datetime_picker.js:0
+#, python-format
+msgid "Previous month"
+msgstr "ماه قبلی"
+
+#. module: odoo_jalaali
+#. odoo-javascript
+#: code:addons/odoo_jalaali/static/src/core/datetime/datetime_picker.js:0
+#, python-format
+msgid "Previous year"
+msgstr "سال پیشین"
+
+#. module: odoo_jalaali
+#. odoo-javascript
+#: code:addons/odoo_jalaali/static/src/core/datetime/datetime_picker.js:0
+#, python-format
+msgid "Select century"
+msgstr "قرن را انتخاب کنید"
+
+#. module: odoo_jalaali
+#. odoo-javascript
+#: code:addons/odoo_jalaali/static/src/core/datetime/datetime_picker.js:0
+#, python-format
+msgid "Select decade"
+msgstr "دهه را انتخاب کنید"
+
+#. module: odoo_jalaali
+#. odoo-javascript
+#: code:addons/odoo_jalaali/static/src/core/datetime/datetime_picker.js:0
+#, python-format
+msgid "Select month"
+msgstr "انتخاب ماه"
+
+#. module: odoo_jalaali
+#. odoo-javascript
+#: code:addons/odoo_jalaali/static/src/core/datetime/datetime_picker.js:0
+#, python-format
+msgid "Select year"
+msgstr "سال را انتخاب کنید"
+
+#. module: odoo_jalaali
+#. odoo-javascript
+#: code:addons/odoo_jalaali/static/src/core/datetime/datetime_picker.js:0
+#, python-format
+msgid "Week numbers"
+msgstr "اعداد هفته"
