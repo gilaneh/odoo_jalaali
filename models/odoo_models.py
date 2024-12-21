@@ -19,7 +19,7 @@ CUSTOM_READ_GROUP_DISPLAY_FORMAT = {
     # Cfr: http://babel.pocoo.org/en/latest/dates.html#date-fields
     'hour': 'MMMM dd HH:00',
     'day': 'yyyy MMMM dd', # yyyy = normal year
-    'week': "YYYY 'هفته'w ",  # w YYYY = ISO week-year
+    'week': "YYYY 'هفته' w ",  # w YYYY = ISO week-year
     'month': 'yyyy MMMM',
     'quarter': 'yyyy QQQQ',
     'year': 'yyyy',
@@ -148,7 +148,7 @@ def _custom_fa_read_group_format_result(self, rows_dict, lazy_groupby):
                         )
                     # special case weeks because babel is broken *and*
                     # ubuntu reverted a change so it's also inconsistent
-                    if granularity == 'week':
+                    if granularity == 'week1':
                         # TODO:Arash;
                         if locale == 'fa_IR':
                             jrange_start = jdatetime.datetime.fromgregorian(date=range_start)
