@@ -1,11 +1,16 @@
+import logging
+
 import jdatetime
 import datetime
 from odoo import models, api
 from odoo.tools import date_utils, get_lang, Query, SQL, sql
 from odoo.osv import expression
-
+from jdatetimext import j_start, j_end
 import pytz
 import babel
+import logging
+
+_logger = models._logger
 
 CUSTOM_READ_GROUP_DISPLAY_FORMAT = {
     # Careful with week/year formats:
@@ -24,64 +29,6 @@ CUSTOM_READ_GROUP_DISPLAY_FORMAT = {
     'quarter': 'yyyy QQQQ',
     'year': 'yyyy',
 }
-
-def custom_range_end_fa(self, group_by, value):
-    '''
-    It gets a datetime group type and datetime, then calculate the last datetime of that period.
-
-    example:
-        group_by -> 'year'
-        value    -> '2024-03-20 00:00:00' (1403/01/01 00:00:00)
-        return   -> '2025-03-21 00:00:00' (1404/01/01 00:00:00)
-
-    :param self:
-    :param group_by:
-    :param value:
-    :return:
-    '''
-    quarter_list = [1, 4, 7, 10]
-    jdate_value = jdatetime.datetime.fromgregorian(date=value)
-    jdate_value_d = jdate_value
-    j_year = jdate_value.year
-    j_month = jdate_value.month
-    j_day = jdate_value.day
-    j_hour = jdate_value.hour
-    j_minute = jdate_value.minute
-    j_second = jdate_value.second
-    match group_by:
-        case 'year':
-            jdate_value_d = jdatetime.datetime(j_year + 1, 1, 1, 0, 0)
-        case 'quarter':
-            j_month = quarter_list[(j_month - 1) // 3]
-            if j_month < 9:
-                j_month += 3
-            else:
-                j_month = 1
-                j_year += 1
-            jdate_value_d = jdatetime.datetime(j_year, j_month, 1, 0, 0, 0)
-        case 'month':
-            first_day = jdatetime.datetime(j_year, j_month, 1, 0, 0, 0)
-            next_month = first_day.replace(day=28) + datetime.timedelta(days=5)
-            jdate_value_d = next_month.replace(day=1)
-        case 'week':
-            jdate_value_d = jdatetime.datetime(j_year, j_month, j_day, 0, 0, 0) + datetime.timedelta(days=7)
-        case 'day':
-            jdate_value_d = jdatetime.datetime(j_year, j_month, j_day, 0, 0, 0) + datetime.timedelta(days=1)
-        case 'hour':
-            jdate_value_d = jdatetime.datetime(j_year, j_month, j_day, j_hour, 0, 0) + datetime.timedelta(hours=1)
-        case 'minute':
-            jdate_value_d = jdatetime.datetime(j_year, j_month, j_day, j_hour, j_minute, 0) + datetime.timedelta(
-                minutes=1)
-        case 'second':
-            jdate_value_d = jdatetime.datetime(j_year, j_month, j_day, j_hour, j_minute, j_second) + datetime.timedelta(
-                seconds=1)
-        case '_':
-            jdate_value_d = jdate_value
-
-    return jdate_value_d.togregorian()
-
-
-models.BaseModel.range_end_fa = custom_range_end_fa
 
 
 _original_read_group_format_result = models.BaseModel._read_group_format_result
@@ -120,14 +67,15 @@ def _custom_fa_read_group_format_result(self, rows_dict, lazy_groupby):
                 additional_domain = [(field_name, '=', value)]
 
             if field.type in ('date', 'datetime'):
-                # TODO:Arash; groupby second step
                 if value and isinstance(value, (datetime.date, datetime.datetime)):
                     range_start = value
-                    if locale == 'fa_IR':
-                        range_end = self.range_end_fa(granularity, value)
-                    else:
-                        range_end = value + interval
 
+                    # TODO:Arash; groupby second step
+                    range_end = j_end(granularity, value)
+                    jrange_start = jdatetime.datetime.fromgregorian(datetime=range_start).strftime('%Y/%m/%d %H:%M:%S')
+                    print(f"\n EEEEEEEEEEE [{granularity}]  {jrange_start}\n range_start: {range_start}\n   range_end: {range_end}")
+                    # if range_start == value:
+                    #     logging.warning(f"[_read_group_format_result] range_start: {range_start} \n    make sure 'jdate_trunc' is working as postgresql function")
                     if field.type == 'datetime':
                         tzinfo = None
                         if self._context.get('tz') in pytz.all_timezones_set:
@@ -147,7 +95,7 @@ def _custom_fa_read_group_format_result(self, rows_dict, lazy_groupby):
                             locale=locale
                         )
                     # special case weeks because babel is broken *and*
-                    # ubuntu reverted a change so it's also inconsistent
+                    # ubuntu reverted a change, so it's also inconsistent
                     if granularity == 'week1':
                         # TODO:Arash;
                         if locale == 'fa_IR':
@@ -271,21 +219,17 @@ def _custom_fa_read_group_groupby(self, groupby_spec: str, query: Query) -> SQL:
         if granularity not in models.READ_GROUP_ALL_TIME_GRANULARITY:
             raise ValueError(f"Granularity specification isn't correct: {granularity!r}")
 
-        if granularity == 'week':
+        if granularity == 'week1':
             # first_week_day: 0=Monday, 1=Tuesday, ...
             first_week_day = int(get_lang(self.env).week_start) - 1
             days_offset = first_week_day and 7 - first_week_day
             interval = f"-{days_offset} DAY"
-            if locale == 'fa_IR':
-                sql_expr = SQL(
-                    "(jdate_trunc('week', %s::timestamp - INTERVAL %s) + INTERVAL %s)",
-                    sql_expr, interval, interval,
-                )
-            else:
-                sql_expr = SQL(
-                    "(date_trunc('week', %s::timestamp - INTERVAL %s) + INTERVAL %s)",
-                    sql_expr, interval, interval,
-                )
+            # TODO:Arash;
+            sql_expr = SQL(
+                "(jdate_trunc('week', %s::timestamp - INTERVAL %s) + INTERVAL %s)",
+                sql_expr, interval, interval,
+            )
+
         elif spec := models.READ_GROUP_NUMBER_GRANULARITY.get(granularity):
             if granularity == 'day_of_week':
                 """
@@ -307,11 +251,9 @@ def _custom_fa_read_group_groupby(self, groupby_spec: str, query: Query) -> SQL:
             else:
                 sql_expr = SQL("date_part(%s, %s)::int", spec, sql_expr)
         else:
+
             # TODO:Arash;
-            if locale == 'fa_IR':
-                sql_expr = SQL("jdate_trunc(%s, %s::timestamp)", granularity, sql_expr)
-            else:
-                sql_expr = SQL("date_trunc(%s, %s::timestamp)", granularity, sql_expr)
+            sql_expr = SQL("jdate_trunc(%s, %s::timestamp)", granularity, sql_expr)
 
         # If the granularity is a part number, the result is a number (double) so no conversion is needed
         if field.type == 'date' and granularity not in models.READ_GROUP_NUMBER_GRANULARITY:
