@@ -154,7 +154,7 @@ models.BaseModel._read_group_format_result = _custom_read_group_format_result
 _original_read_group_groupby = models.BaseModel._read_group_groupby
 
 
-def _custom_fa_read_group_groupby(self, groupby_spec: str, query: Query) -> SQL:
+def _18_custom_fa_read_group_groupby(self, groupby_spec: str, query: Query) -> SQL:
     locale = get_lang(self.env).code
     fname, property_name, granularity = models.parse_read_group_spec(groupby_spec)
     if fname not in self:
@@ -265,6 +265,58 @@ def _custom_fa_read_group_groupby(self, groupby_spec: str, query: Query) -> SQL:
         sql_expr = SQL("COALESCE(%s, FALSE)", sql_expr)
     # print(f"\n {sql_expr}\n")
     return sql_expr
+
+
+def _custom_fa_read_group_groupby(self, groupby_spec: str, query: Query) -> tuple[SQL, list[str]]:
+    """ Return a pair (<SQL expression>, [<field names used in SQL expression>])
+    corresponding to the given groupby element.
+    """
+    fname, property_name, granularity = models.parse_read_group_spec(groupby_spec)
+    if fname not in self:
+        raise ValueError(f"Invalid field {fname!r} on model {self._name!r}")
+
+    field = self._fields[fname]
+
+    if property_name:
+        if field.type != "properties":
+            raise ValueError(f"Property set on a non properties field: {property_name!r}")
+        access_fname = f"{fname}.{property_name}"
+    else:
+        access_fname = fname
+
+    if granularity and field.type not in ('datetime', 'date', 'properties'):
+        raise ValueError(f"Granularity set on a no-datetime field or property: {groupby_spec!r}")
+
+    sql_expr = self._field_to_sql(self._table, access_fname, query)
+    if field.type == 'datetime' and self.env.context.get('tz') in pytz.all_timezones_set:
+        sql_expr = SQL("timezone(%s, timezone('UTC', %s))", self.env.context['tz'], sql_expr)
+
+    if field.type in ('datetime', 'date') or (field.type == 'properties' and granularity):
+        if not granularity:
+            raise ValueError(f"Granularity not set on a date(time) field: {groupby_spec!r}")
+        if granularity not in models.READ_GROUP_TIME_GRANULARITY:
+            raise ValueError(f"Granularity specification isn't correct: {granularity!r}")
+
+        if granularity == 'week1':
+            # first_week_day: 0=Monday, 1=Tuesday, ...
+            first_week_day = int(get_lang(self.env).week_start) - 1
+            days_offset = first_week_day and 7 - first_week_day
+            interval = f"-{days_offset} DAY"
+            sql_expr = SQL(
+                "(date_trunc('week', %s::timestamp - INTERVAL %s) + INTERVAL %s)",
+                sql_expr, interval, interval,
+            )
+        else:
+            sql_expr = SQL("jdate_trunc(%s, %s::timestamp)", granularity, sql_expr)
+
+        if field.type == 'date':
+            sql_expr = SQL("%s::date", sql_expr)
+
+    elif field.type == 'boolean':
+        sql_expr = SQL("COALESCE(%s, FALSE)", sql_expr)
+
+    return sql_expr, [fname]
+
 
 def _custom_read_group_groupby(self, groupby_spec: str, query: Query) -> SQL:
     """ Return <SQL expression> corresponding to the given groupby element.
