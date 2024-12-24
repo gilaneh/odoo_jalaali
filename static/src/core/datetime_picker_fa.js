@@ -94,7 +94,7 @@ const earliest = (date1, date2) => (date1 < date2 ? date1 : date2);
 const getStartOfDecade = (date) => Math.floor(date.year / 10) * 10;
 
 /**
-* Gilaneh
+* Giladoo
  * @private
  * It returns True if user language is Persian on web or website
  * @param {Object} session
@@ -105,21 +105,21 @@ const isFaLang = (_session) => {
 }
 
 /**
- * Gilaneh
+ * Giladoo
  * @param {DateTime} date
  * @returns {String} jalaali year
  */
 const jGetStartOfDecade = (date) => getStartOfDecade({'year': jalaali.toJalaali(date.year, 3, 23).jy});
 
 /**
- * Gilaneh
+ * Giladoo
  * @param {DateTime} date
  * @returns {String} jalaali year
  */
 const jGetStartOfCentury = (date) => Math.floor(jalaali.toJalaali(date.year, 3, 23).jy / 100) * 100;
 
 /**
- * Gilaneh
+ * Giladoo
  * @param {DateTime} date
  * @returns {DateTime}
  */
@@ -139,6 +139,8 @@ const jalaaliDateRange = (date, duration='month') => {
         if(duration == 'month'){
             gDateStart = jalaali.toGregorian(jDate.jy, jDate.jm, 1)
             gDateEnd = jalaali.toGregorian(jDate.jy, jDate.jm, jalaali.jalaaliMonthLength(jDate.jy, jDate.jm))
+//            console.log('date', date.year, date.month, date.day)
+//            console.log('date', jDate.jy, jDate.jm, jDate.jd)
         }
         else if(duration == 'year'){
             jDate = jalaali.toJalaali(date.year, 3, 23)
@@ -208,14 +210,14 @@ const toDateItem = ({ isOutOfRange = false, isValid = true, label, range, extraC
     includesToday: isInRange(today(), range),
     isOutOfRange,
     isValid,
-    // Gilaneh
+    // Giladoo
     label: isFaLang(session)  ? toDateItemLabel(range[0], label) : String(range[0][label]) ,
     range,
     extraClass,
 });
 
 /**
- * Gilaneh
+ * Giladoo
  * @param {DateItem[]} weekDayItems
  * @returns {WeekItem}
  */
@@ -242,6 +244,34 @@ const toWeekItem = (weekDayItems) => ({
     number: weekDayItems[3].range[0].weekNumber,
     days: weekDayItems,
 });
+/**
+ * Giladoo
+ * It calculates the week number based on jalaali calendar
+ * @param {DateItem[]} weekDayItems
+ * @returns {WeekItem}
+ */
+const toJalaaliWeekItem = (weekDayItems, monthRange) => {
+    // Like wise toWeekItem, it takes forth item of weekDayItems to calculate week day
+    let i3_range = weekDayItems[3].range[0]
+    let jdate_i3_range = jalaali.toJalaali(i3_range.year, i3_range.month, i3_range.day)
+    let number = jalaali.jalaaliWeekNumber(jdate_i3_range.jy, jdate_i3_range.jm, jdate_i3_range.jd)
+    let jmonthRange = jalaali.toJalaali(monthRange[0].year, monthRange[0].month, monthRange[0].day)
+
+    // Last week of the year
+    if ( jdate_i3_range.jy != jmonthRange.jy){
+        // It takes the first item of weekDayItems as a reference
+        let i0_range = weekDayItems[0].range[0]
+        let jdate_i0_range = jalaali.toJalaali(i0_range.year, i0_range.month, i0_range.day)
+        number = jalaali.jalaaliWeekNumber(jdate_i0_range.jy, jdate_i0_range.jm, jdate_i0_range.jd)
+    }
+
+    // First week of a year
+    if (number > 52 && jmonthRange.jm == 1 && jmonthRange.jd == 1){
+        number = 1
+    }
+    return {number: number,
+            days: weekDayItems,}
+};
 
 // Time constants
 const HOURS = numberRange(0, 24).map((hour) => [hour, String(hour)]);
@@ -384,7 +414,7 @@ const PRECISION_LEVELS = new Map()
     });
 
 /**
- * Gilaneh
+ * Giladoo
  * Precision levels
  * @type {Map<PrecisionLevel, PrecisionInfo>}
  */
@@ -396,7 +426,7 @@ const PRECISION_LEVELS_fa = new Map()
         step: { month: 1 },
         getTitle: (date, { additionalMonth }) => {
 
-//            console.log('getTitle',jalaali.toJalaali(date.year, date.month, date.day).jy )
+//            console.log('---- getTitle', date.toISODate() )
 //            const titles = [`${date.monthLong} ${date.year}`];
             if (date.year < 1600){
                 let jDate = jalaali.toGregorian(date.year, date.month, date.day)
@@ -405,10 +435,22 @@ const PRECISION_LEVELS_fa = new Map()
             const titles = [`${date.plus({'month': 1}).monthLong} ${jalaali.toJalaali(date.year, date.month, date.day).jy}`]
 
             if (additionalMonth) {
-                const nextDate = date.plus({ month: 1 });
-                // Gilaneh next.jy
-                const next = jalaali.toJalaali(date.year, date.month + 1, date.day)
-                titles.push(`${nextDate.plus({'month': 1}).monthLong} ${next.jy}`);
+                const nextDate = jalaali.monthInterval(date, 2, DateTime).start;
+                // Giladoo next.jy
+//                const next = date.plus({ month: 1 });
+//                titles.push(`${next.monthLong} ${next.year}`);
+                const next = jalaali.toJalaali(nextDate.year, nextDate.month, nextDate.day)
+                titles.push(`${nextDate.monthLong} ${next.jy}`);
+
+
+
+//                const next = jalaali.start_end_j(date)
+//                console.log('this_month:', this_month)
+
+
+
+
+//                titles.push(`${nextDate.plus({'month': 1}).monthLong} ${next.jy}`);
             }
             return titles;
         },
@@ -417,25 +459,29 @@ const PRECISION_LEVELS_fa = new Map()
             { additionalMonth, maxDate, minDate, showWeekNumbers, isDateValid, dayCellClass }
         ) => {
 
+//            console.log('   getItems 1', date.toISODate())
             date = jalaaliDate(date)
             const startDates = [date];
 
-//            console.log('getItems', date.toISODate())
+//            console.log('   getItems 2', date.toISODate())
 
             if (additionalMonth) {
-                // Gilaneh 1 > 2
-                startDates.push(startDates[0].plus({ month: 1 }));
+                // Giladoo 1 > 2
+//                startDates.push(startDates[0].plus({ month: 1 }));
+                startDates.push(jalaali.monthInterval(startDates[0], 2, DateTime).start);
             }
             return startDates.map((date, i) => {
 
 //                const monthRange = [date.startOf("month"), date.endOf("month")];
                 const monthRange = jalaaliDateRange(date);
+
+//                const mr = monthRange
+//                console.log('monthRange:', jalaali.toJalaali(mr[0].year,mr[0].month,mr[0].day, ))
                 /** @type {WeekItem[]} */
                 const weeks = [];
 
                 // Generate 6 weeks for current month
                 let startOfNextWeek = getStartOfWeek(monthRange[0]);
-//                console.log('startOfNextWeek', startOfNextWeek, startOfNextWeek.plus({ day: 1 }))
                 for (let w = 0; w < 6; w++) {
                     const weekDayItems = [];
                     // Generate all days of the week
@@ -454,7 +500,8 @@ const PRECISION_LEVELS_fa = new Map()
                             startOfNextWeek = day.plus({ day: 1 });
                         }
                     }
-                    weeks.push(toWeekItem(weekDayItems));
+                    // Giladoo
+                    weeks.push(toJalaaliWeekItem(weekDayItems, monthRange));
                 }
 
                 // Generate days of week labels
@@ -466,8 +513,6 @@ const PRECISION_LEVELS_fa = new Map()
                 if (showWeekNumbers) {
                     daysOfWeek.unshift(["#", _t("Week numbers"), "#"]);
                 }
-//                console.log('weeks[0]', weeks[0]['days'][0])
-
                 return {
                     id: `__month__${i}`,
                     number: monthRange[0].month,
@@ -579,13 +624,13 @@ patch(DateTimePicker.prototype,{
         daysOfWeekFormat: { type: String, optional: true },
         maxDate: { type: [NULLABLE_DATETIME_PROPERTY, { value: "today" }], optional: true },
         maxPrecision: {
-        // Gilaneh
+        // Giladoo
             type: isFaLang(session)  ? [...PRECISION_LEVELS_fa.keys()].map((value) => ({ value })) : [...PRECISION_LEVELS.keys()].map((value) => ({ value })),
             optional: true,
         },
         minDate: { type: [NULLABLE_DATETIME_PROPERTY, { value: "today" }], optional: true },
         minPrecision: {
-        // Gilaneh
+        // Giladoo
             type: isFaLang(session)  ? [...PRECISION_LEVELS_fa.keys()].map((value) => ({ value })) : [...PRECISION_LEVELS.keys()].map((value) => ({ value })),
             optional: true,
         },
@@ -626,7 +671,7 @@ patch(DateTimePicker.prototype,{
     //-------------------------------------------------------------------------
 
     get activePrecisionLevel() {
-        // Gilaneh
+        // Giladoo
         return isFaLang(session)  ? PRECISION_LEVELS_fa.get(this.state.precision) : PRECISION_LEVELS.get(this.state.precision);
     },
 
@@ -784,7 +829,7 @@ patch(DateTimePicker.prototype,{
         this.shouldAdjustFocusDate = false;
 //        this.state.focusDate = this.clamp(dateToFocus.startOf("month"));
 
-        // Gilaneh
+        // Giladoo
         if (isFaLang(session) ){
             let jdateToFocus = jalaali.toJalaali(dateToFocus.year, dateToFocus.month, dateToFocus.day )
 //            console.log('jdateToFocus',jdateToFocus)
@@ -826,7 +871,7 @@ patch(DateTimePicker.prototype,{
      * @param {PrecisionLevel} maxPrecision
      */
     filterPrecisionLevels(minPrecision, maxPrecision) {
-        // Gilaneh
+        // Giladoo
         const levels = isFaLang(session)  ? [...PRECISION_LEVELS_fa.keys()] : [...PRECISION_LEVELS.keys()];
         return levels.slice(levels.indexOf(minPrecision), levels.indexOf(maxPrecision) + 1);
     },
@@ -924,8 +969,16 @@ patch(DateTimePicker.prototype,{
      */
     next(ev) {
         ev.preventDefault();
+        // Giladoo
         const { step } = this.activePrecisionLevel;
-        this.state.focusDate = this.clamp(this.state.focusDate.plus(step));
+        let date = this.state.focusDate
+        if (isFaLang(session) && step['month'] && date.year > 1600){
+            let jdate = jalaali.monthInterval(date, 1, DateTime)
+//            console.log('next:', jdate.start.toISODate(), jdate.end.toISODate())
+            this.state.focusDate = this.clamp(jdate.start);
+        }else{
+            this.state.focusDate = this.clamp(this.state.focusDate.plus(step));
+        }
     },
 
     /**
@@ -936,7 +989,16 @@ patch(DateTimePicker.prototype,{
     previous(ev) {
         ev.preventDefault();
         const { step } = this.activePrecisionLevel;
-        this.state.focusDate = this.clamp(this.state.focusDate.minus(step));
+        //Giladoo
+        let date = this.state.focusDate
+        if (isFaLang(session) && step['month'] && date.year > 1600){
+        // TODO:Giladoo; 1395/04 jumps to 1395/02. next month direction is ok, previous has this problem.
+            let jdate = jalaali.monthInterval(date, -1, DateTime)
+//            console.log('next:\n',jdate.jStart, jdate.start.toISODate(),'\n', jdate.jEnd, jdate.end.toISODate())
+            this.state.focusDate = this.clamp(jdate.start);
+        }else{
+            this.state.focusDate = this.clamp(this.state.focusDate.minus(step));
+        }
     },
 
     /**
