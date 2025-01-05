@@ -33,7 +33,7 @@ CUSTOM_READ_GROUP_DISPLAY_FORMAT = {
 
 _original_read_group_format_result = models.BaseModel._read_group_format_result
 
-
+@api.model
 def _custom_fa_read_group_format_result(self, rows_dict, lazy_groupby):
     """
         Helper method to format the data contained in the dictionary data by
@@ -75,12 +75,19 @@ def _custom_fa_read_group_format_result(self, rows_dict, lazy_groupby):
 
             if field.type in ('date', 'datetime'):
                 if value and isinstance(value, (datetime.date, datetime.datetime)):
+                    # value = j_start(granularity, value)
                     range_start = value
 
                     # TODO:Arash; groupby second step
                     # range_end = value + interval
                     range_end = j_end(granularity, value)
 
+                    print(f"=====>>>>> \n range_start: {range_start} \n range_end:  {range_end} ")
+
+
+
+
+
                     if field.type == 'datetime':
                         tzinfo = None
                         if self._context.get('tz') in pytz.all_timezones_set:
@@ -115,103 +122,6 @@ def _custom_fa_read_group_format_result(self, rows_dict, lazy_groupby):
 
             row['__domain'] = expression.AND([row['__domain'], additional_domain])
 
-
-@api.model
-def _18_custom_fa_read_group_format_result(self, rows_dict, lazy_groupby):
-    locale = get_lang(self.env).code
-    for group in lazy_groupby:
-        field_name = group.split(':')[0].split('.')[0]
-        field = self._fields[field_name]
-
-        if field.type in ('date', 'datetime'):
-            granularity = group.split(':')[1] if ':' in group else 'month'
-            if granularity in models.READ_GROUP_TIME_GRANULARITY:
-                locale = get_lang(self.env).code
-                fmt = models.DEFAULT_SERVER_DATETIME_FORMAT if field.type == 'datetime' else models.DEFAULT_SERVER_DATE_FORMAT
-                interval = models.READ_GROUP_TIME_GRANULARITY[granularity]
-        elif field.type == "properties":
-            self._read_group_format_result_properties(rows_dict, group)
-            continue
-
-        for row in rows_dict:
-            value = row[group]
-
-            if isinstance(value, models.BaseModel):
-                row[group] = (value.id, value.sudo().display_name) if value else False
-                value = value.id
-
-            if not value and field.type == 'many2many':
-                other_values = [other_row[group][0] if isinstance(other_row[group], tuple)
-                                else other_row[group].id if isinstance(other_row[group], models.BaseModel)
-                else other_row[group] for other_row in rows_dict if other_row[group]]
-                additional_domain = [(field_name, 'not in', other_values)]
-            else:
-                additional_domain = [(field_name, '=', value)]
-
-            if field.type in ('date', 'datetime'):
-                if value and isinstance(value, (datetime.date, datetime.datetime)):
-                    range_start = value
-
-                    # TODO:Arash; groupby second step
-                    range_end = j_end(granularity, value)
-                    # jrange_start = jdatetime.datetime.fromgregorian(datetime=range_start).strftime('%Y/%m/%d %H:%M:%S')
-
-                    # print(f"\n EEEEEEEEEEE [{granularity}]  {jrange_start}\n range_start: {range_start}\n   range_end: {range_end}")
-
-                    # if range_start == value:
-                    #     logging.warning(f"[_read_group_format_result] range_start: {range_start} \n    make sure 'jdate_trunc' is working as postgresql function")
-                    if field.type == 'datetime':
-                        tzinfo = None
-                        if self._context.get('tz') in pytz.all_timezones_set:
-                            tzinfo = pytz.timezone(self._context['tz'])
-                            range_start = tzinfo.localize(range_start).astimezone(pytz.utc)
-                            # take into account possible hour change between start and end
-                            range_end = tzinfo.localize(range_end).astimezone(pytz.utc)
-
-                        label = babel.dates.format_datetime(
-                            range_start, format=CUSTOM_READ_GROUP_DISPLAY_FORMAT[granularity],
-                            tzinfo=tzinfo, locale=locale
-                        )
-
-                    else:
-                        label = babel.dates.format_date(
-                            value, format=CUSTOM_READ_GROUP_DISPLAY_FORMAT[granularity],
-                            locale=locale
-                        )
-                    # special case weeks because babel is broken *and*
-                    # ubuntu reverted a change, so it's also inconsistent
-                    if granularity == 'week1':
-                        # TODO:Arash;
-                        if locale == 'fa_IR':
-                            jrange_start = jdatetime.datetime.fromgregorian(date=range_start)
-                            week = jrange_start.weeknumber()
-                            year = jrange_start.year
-                            label = f"( {year} هفته {week} )"
-                        else:
-                            year, week = date_utils.weeknumber(
-                                babel.Locale.parse(locale),
-                                range_start,
-                            )
-                            label = f"W{week} {year:04}"
-
-                    range_start = range_start.strftime(fmt)
-                    range_end = range_end.strftime(fmt)
-                    row[group] = label  # TODO should put raw data
-                    row.setdefault('__range', {})[group] = {'from': range_start, 'to': range_end}
-
-                    additional_domain = [
-                        '&',
-                        (field_name, '>=', range_start),
-                        (field_name, '<', range_end),
-                    ]
-                elif value is not None and granularity in models.READ_GROUP_NUMBER_GRANULARITY:
-                    additional_domain = [(f"{field_name}.{granularity}", '=', value)]
-                elif not value:
-                    # Set the __range of the group containing records with an unset
-                    # date/datetime field value to False.
-                    row.setdefault('__range', {})[group] = False
-
-            row['__domain'] = expression.AND([row['__domain'], additional_domain])
 
 @api.model
 def _custom_read_group_format_result(self, rows_dict, lazy_groupby):
@@ -226,6 +136,33 @@ def _custom_read_group_format_result(self, rows_dict, lazy_groupby):
     """
     # TODO:Arash;
     locale = get_lang(self.env).code
+    # print(f">>>====>>>>\n rows_dict:{rows_dict}\n lazy_groupby:{lazy_groupby}")
+    '''
+     rows_dict:[
+      {'create_date:month': datetime.datetime(2024, 10, 1, 0, 0), 'create_date_count': 147, '__domain': []},
+      {'create_date:month': datetime.datetime(2024, 12, 1, 0, 0), 'create_date_count': 28, '__domain': []}
+      ]
+ lazy_groupby:['create_date:month']
+
+
+ rows_dict:[
+    {'create_date:month': datetime.datetime(2024, 10, 25, 6, 57, 31, 330841), 'create_date_count': 1, '__domain': []},
+    {'create_date:month': datetime.datetime(2024, 10, 25, 6, 57, 31, 704849), 'create_date_count': 1, '__domain': []}, 
+    {'create_date:month': datetime.datetime(2024, 10, 25, 6, 57, 32, 63573), 'create_date_count': 1, '__domain': []}, 
+    {'create_date:month': datetime.datetime(2024, 10, 25, 6, 57, 32, 434534), 'create_date_count': 1, '__domain': []}, 
+    {'create_date:month': datetime.datetime(2024, 10, 25, 6, 57, 32, 812629), 'create_date_count': 1, '__domain': []}, 
+    {'create_date:month': datetime.datetime(2024, 10, 25, 6, 57, 33, 196590), 'create_date_count': 1, '__domain': []},
+    {'create_date:month': datetime.datetime(2024, 10, 25, 6, 57, 33, 590642), 'create_date_count': 1, '__domain': []},
+    {'create_date:month': datetime.datetime(2024, 10, 25, 6, 57, 33, 979137), 'create_date_count': 1, '__domain': []},
+    {'create_date:month': datetime.datetime(2024, 10, 25, 6, 57, 34, 360297), 'create_date_count': 1, '__domain': []},
+    {'create_date:month': datetime.datetime(2024, 10, 25, 6, 57, 34, 739255), 'create_date_count': 1, '__domain': []},
+    {'create_date:month': datetime.datetime(2024, 10, 25, 6, 57, 35, 128427), 'create_date_count': 1, '__domain': []}, 
+    {'create_date:month': datetime.datetime(2024, 10, 25, 6, 57, 35, 507151), 'create_date_count': 1, '__domain': []},
+    ]
+    lazy_groupby:['create_date:month']
+
+'''
+
     if locale == 'fa_IR':
         return _custom_fa_read_group_format_result(self, rows_dict, lazy_groupby)
     else:
@@ -279,6 +216,7 @@ def _custom_fa_read_group_groupby(self, groupby_spec: str, query: Query) -> tupl
             )
         else:
             sql_expr = SQL("jdate_trunc(%s, %s::timestamp)", granularity, sql_expr)
+            print(f"\\\\\\\granularity: {granularity}\n    sql_expr:\n   {sql_expr}")
 
         if field.type == 'date':
             sql_expr = SQL("%s::date", sql_expr)
