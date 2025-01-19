@@ -1,40 +1,13 @@
-import logging
-
-import jdatetime
 import datetime
 from odoo import models, api
-# from odoo.tools import date_utils, get_lang, Query, SQL, sql
-from odoo.tools import date_utils, get_lang
 from odoo.osv import expression
 from jdatetimext import j_start, j_end
-from odoo.tools.misc import CountingStream, clean_context, DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT, get_lang
-
+from odoo.tools.misc import  DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT, get_lang
 import pytz
 import babel
-import logging
 import dateutil
-# from icecream import ic
 
 _logger = models._logger
-
-CUSTOM_READ_GROUP_DISPLAY_FORMAT = {
-    # Careful with week/year formats:
-    #  - yyyy (lower) must always be used, *except* for week+year formats
-    #  - YYYY (upper) must always be used for week+year format
-    #         e.g. 2006-01-01 is W52 2005 in some locales (de_DE),
-    #                         and W1 2006 for others
-    #
-    # Mixing both formats, e.g. 'MMM YYYY' would yield wrong results,
-    # such as 2006-01-01 being formatted as "January 2005" in some locales.
-    # Cfr: http://babel.pocoo.org/en/latest/dates.html#date-fields
-    'hour': 'MMMM dd HH:00',
-    'day': 'yyyy MMMM dd', # yyyy = normal year
-    'week': "YYYY 'هفته' w ",  # w YYYY = ISO week-year
-    'month': 'yyyy MMMM',
-    'quarter': 'yyyy QQQQ',
-    'year': 'yyyy',
-}
-
 
 _original_read_group_process_groupby = models.BaseModel._read_group_process_groupby
 
@@ -95,7 +68,6 @@ def _custom_fa_read_group_process_groupby(self, gb, query):
         'qualified_field': qualified_field,
     }
 
-
 def _custom_read_group_process_groupby(self, gb, query):
     """ Return <SQL expression> corresponding to the given groupby element.
     The method also checks whether the fields used in the groupby are
@@ -109,9 +81,6 @@ def _custom_read_group_process_groupby(self, gb, query):
         return _original_read_group_process_groupby(self, gb, query)
 
 models.BaseModel._read_group_process_groupby = _custom_read_group_process_groupby
-
-
-
 
 
 _original_read_group_format_result = models.BaseModel._read_group_format_result
@@ -190,7 +159,6 @@ def _custom_fa_read_group_format_result(self, data, annotated_groupbys, groupby,
             data['__context'] = { 'group_by': groupby[len(annotated_groupbys):]}
         del data['id']
         return data
-
 
 def _custom_read_group_format_result(self, data, annotated_groupbys, groupby, domain):
     """ Return <SQL expression> corresponding to the given groupby element.

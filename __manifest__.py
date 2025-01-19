@@ -20,6 +20,7 @@
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'web'],
+    "external_dependencies": {'python': ['jdatetimext']},
 
     # always loaded
     'data': [
