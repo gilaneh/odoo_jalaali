@@ -8,7 +8,7 @@
     'website': 'https://giladoo.com/odoo_jalaali',
     'depends': ['web', 'mail'],
     'external_dependencies': {
-        'python': ['khayyam'],
+        'python': ['jdatetimext', 'khayyam'],
     },
     'data': [],
     'demo': [],
