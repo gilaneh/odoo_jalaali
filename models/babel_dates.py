@@ -5,12 +5,13 @@ from babel.core import Locale
 from datetime import datetime, date, time
 import khayyam
 import jdatetime
+
 def date_time_format__init__(self, value, locale):
     self.locale = Locale.parse(locale)
 
     # TODO:Arash; locale is not string
-    if locale.language.startswith('fa'):
-        # print(f" .........> fa_IR")
+    print(f" .........> fa_IR {locale},  ")
+    if isinstance(locale, str) and locale.startswith('fa') or isinstance(locale.language, str) and  locale.language.startswith('fa'):
         if isinstance(value, datetime):
 
             # TODO:Arash; Make sure jdatetime is working properly

@@ -73,7 +73,7 @@ def _custom_fa_read_group_format_result(self, rows_dict, lazy_groupby):
                     # TODO:Arash; groupby second step
                     range_end = j_end(granularity, value)
                     jrange_start = jdatetime.datetime.fromgregorian(datetime=range_start).strftime('%Y/%m/%d %H:%M:%S')
-                    print(f"\n EEEEEEEEEEE [{granularity}]  {jrange_start}\n range_start: {range_start}\n   range_end: {range_end}")
+                    # print(f"\n EEEEEEEEEEE [{granularity}]  {jrange_start}\n range_start: {range_start}\n   range_end: {range_end}")
                     # if range_start == value:
                     #     logging.warning(f"[_read_group_format_result] range_start: {range_start} \n    make sure 'jdate_trunc' is working as postgresql function")
                     if field.type == 'datetime':
@@ -91,7 +91,7 @@ def _custom_fa_read_group_format_result(self, rows_dict, lazy_groupby):
 
                     else:
                         label = babel.dates.format_date(
-                            value, format=models.CUSTOM_READ_GROUP_DISPLAY_FORMAT[granularity],
+                            value, format=CUSTOM_READ_GROUP_DISPLAY_FORMAT[granularity],
                             locale=locale
                         )
                     # special case weeks because babel is broken *and*

@@ -1,6 +1,6 @@
 {
     'name': 'Odoo Jalaali',
-    'version': '18.0.1.0.1',
+    'version': '18.0.1.0.2',
     'countries': ['ir'],
     'category': 'Localization',
     'description': 'Jalaali datetime fields and datetime picker.',
